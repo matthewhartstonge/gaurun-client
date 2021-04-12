@@ -35,11 +35,41 @@ const (
 
 // An AndroidSetting has setting fields for FCM/GCM.
 type AndroidSetting struct {
-	CollapseKey    string `json:"collapse_key,omitempty"`
-	DelayWhileIdle bool   `json:"delay_while_idle,omitempty"`
-	TimeToLive     int    `json:"time_to_live,omitempty"`
-	Priority       string `json:"priority,omitempty"`
+	CollapseKey    string   `json:"collapse_key,omitempty"`
+	DelayWhileIdle bool     `json:"delay_while_idle,omitempty"`
+	TimeToLive     int      `json:"time_to_live,omitempty"`
+	Priority       Priority `json:"priority,omitempty"`
 }
+
+// Priority sets an android specific delivery priority on the push notification.
+type Priority string
+
+const (
+	// Normal priority.
+	// This is the default priority for data messages. Normal priority messages
+	// are delivered immediately when the app is in the foreground.
+	//
+	// When the device is in Doze, delivery may be delayed to conserve battery.
+	// For less time-sensitive messages, such as notifications of new email,
+	// keeping your UI in sync, or syncing app data in the background, choose
+	// normal delivery priority.
+	PriorityNormal Priority = "normal"
+
+	// High priority.
+	// FCM attempts to deliver high priority messages immediately, allowing the
+	// FCM service to wake a sleeping device when necessary and to run some
+	// limited processing (including very limited network access). High priority
+	// messages generally should result in user interaction with your app or its
+	// notifications. If FCM detects a pattern in which they don't, your
+	// messages may be de-prioritized.
+	// Android P introduced app standby buckets which limit the number of FCM
+	// high priority messages you can send to your app that don't result in the
+	// user using your app or viewing a notification. If, in response to a high
+	// priority message, a notification is displayed in a way that is visible to
+	// the user, then your app standby bucket quota will not be consumed by that
+	// message.
+	PriorityHigh Priority = "high"
+)
 
 // An IOSSetting has setting fields for APNs.
 type IOSSetting struct {
